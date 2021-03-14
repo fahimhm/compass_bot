@@ -9,6 +9,8 @@ pipelines:
   default:
     - step:
         script:
+          - pip install pandas
+          - pip install telegram
           - python -m doctest -v script/main.py
           - echo "Everything is awesome"
       #     name: Test
