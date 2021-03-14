@@ -10,7 +10,7 @@ pipelines:
     - parallel:
       - step:
           script:
-            - python -m doctest -v /script/main.py
+            - python -m doctest -v main.py
       #     name: Test
       #     caches:
       #       - pip
