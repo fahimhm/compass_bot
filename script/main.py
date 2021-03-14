@@ -4,6 +4,8 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Conve
 import logging
 import re
 import pandas as pd
+from os import getcwd
+from os.path import join, dirname
 
 # references: https://www.thepythoncode.com/article/make-a-telegram-bot-in-python
 # States, as integers
@@ -16,7 +18,7 @@ PROFILE_C = 5
 SAVEDATA = 6
 CANCEL = 100
 
-user_profile = pd.read_csv('../data/user_profile.csv')
+user_profile = pd.read_csv(join(dirname(getcwd()), 'data', 'user_profile.csv'))
 temp_profile = {
     'id': [],
     'first_name': [],
@@ -27,7 +29,7 @@ temp_profile = {
 }
 
 def start(update, context):
-    
+
     update.message.reply_text('Haloo...')
     if update.message.from_user['first_name'] not in user_profile.values:
         update.message.reply_text('Selamat datang, untuk dapat menggunakan fitur ini secara optimal, kami butuh data diri anda, bersediakan anda?',
@@ -59,7 +61,7 @@ def update_data(kw, save=False, **kwargs):
     if save == True:
         df = pd.DataFrame.from_dict(temp_profile)
         user_profile = user_profile.append(df, ignore_index=True)
-        return user_profile.to_csv('../data/user_profile.csv', index=False), temp_profile
+        return user_profile.to_csv(join(dirname(getcwd()), 'data', 'user_profile.csv'), index=False), temp_profile
     else:
         return temp_profile
 
