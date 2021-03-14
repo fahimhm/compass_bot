@@ -9,6 +9,8 @@ pipelines:
   default:
     - step:
         script:
+          - echo $BITBUCKET_CLONE_DIR
+          - pwd
           - pip install pandas
           - pip install telegram
           - pip install python-telegram-bot
