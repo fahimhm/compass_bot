@@ -9,7 +9,7 @@ pipelines:
   default:
     - step:
         script:
-          - python -m doctest -v main.py
+          - python -m doctest -v script/main.py
           - echo "Everything is awesome"
       #     name: Test
       #     caches:
