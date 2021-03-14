@@ -18,7 +18,7 @@ PROFILE_C = 5
 SAVEDATA = 6
 CANCEL = 100
 
-user_profile = pd.read_csv(join(dirname(getcwd()), 'data', 'user_profile.csv'))
+user_profile = pd.read_csv(join('data', 'user_profile.csv'))
 temp_profile = {
     'id': [],
     'first_name': [],
@@ -61,7 +61,7 @@ def update_data(kw, save=False, **kwargs):
     if save == True:
         df = pd.DataFrame.from_dict(temp_profile)
         user_profile = user_profile.append(df, ignore_index=True)
-        return user_profile.to_csv(join(dirname(getcwd()), 'data', 'user_profile.csv'), index=False), temp_profile
+        return user_profile.to_csv(join('data', 'user_profile.csv'), index=False), temp_profile
     else:
         return temp_profile
 
