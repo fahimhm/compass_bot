@@ -18,15 +18,16 @@ CANCEL = 100
 
 user_profile = pd.read_csv('../data/user_profile.csv')
 temp_profile = {
-    'id':[],
-    'first_name':[],
-    'username':[],
-    'domisili':[],
-    'gender':[],
-    'age':[]
+    'id': [],
+    'first_name': [],
+    'username': [],
+    'domisili': [],
+    'gender': [],
+    'age': []
 }
 
 def start(update, context):
+    
     update.message.reply_text('Haloo...')
     if update.message.from_user['first_name'] not in user_profile.values:
         update.message.reply_text('Selamat datang, untuk dapat menggunakan fitur ini secara optimal, kami butuh data diri anda, bersediakan anda?',
