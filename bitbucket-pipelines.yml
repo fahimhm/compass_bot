@@ -11,6 +11,7 @@ pipelines:
         script:
           - pip install pandas
           - pip install telegram
+          - pip install python-telegram-bot
           - python -m doctest -v script/main.py
           - echo "Everything is awesome"
       #     name: Test
