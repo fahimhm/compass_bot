@@ -16,9 +16,13 @@ PROFILE_A = 3
 PROFILE_B = 4
 PROFILE_C = 5
 SAVEDATA = 6
+DESTIN = 7
+TIME = 8
+TRAVELPLAN = 9
 CANCEL = 100
 
-user_profile = pd.read_csv(join('data', 'user_profile.csv'))
+# user_profile = pd.read_csv(join('data', 'user_profile.csv'))
+user_profile = pd.read_csv('../data/user_profile.csv')
 temp_profile = {
     'id': [],
     'first_name': [],
@@ -27,9 +31,12 @@ temp_profile = {
     'gender': [],
     'age': []
 }
+temp_dest = {
+    'destination': '',
+    'time': ''
+}
 
 def start(update, context):
-
     update.message.reply_text('Haloo...')
     if update.message.from_user['first_name'] not in user_profile.values:
         update.message.reply_text('Selamat datang, untuk dapat menggunakan fitur ini secara optimal, kami butuh data diri anda, bersediakan anda?',
@@ -61,9 +68,20 @@ def update_data(kw, save=False, **kwargs):
     if save == True:
         df = pd.DataFrame.from_dict(temp_profile)
         user_profile = user_profile.append(df, ignore_index=True)
-        return user_profile.to_csv(join('data', 'user_profile.csv'), index=False), temp_profile
+        # return user_profile.to_csv(join('data', 'user_profile.csv'), index=False), temp_profile
+        return user_profile.to_csv('../data/user_profile.csv', index=False), temp_profile
     else:
         return temp_profile
+
+def update_dest(kw, save=False, **kwargs):
+    global temp_dest
+    if kw == 'd':
+        temp_dest['destination'] = kwargs['d']
+
+    if kw == 't':
+        temp_dest['time'] = kwargs['t']
+    
+    return temp_dest
 
 def welcome1(update, context):
     if update.message.text.lower() in ['yes', 'ya', 'y']:
@@ -99,27 +117,34 @@ def startagain(update, context):
 
 def welcome2(update, context):
     if 'oke' in update.message.text:
-        # update.message.reply_text('Ini nih tempat-tempat keren yang populer saat ini:')
-        # update.message.reply_text('1. Danau Toba')
-        # update.message.reply_text('2. Bali')
-        # update.message.reply_text('3. Likupang')
-        # update.message.reply_text('4. Jogjakarta')
-        # update.message.reply_text('5. Mandalika')
-        # update.message.reply_text('6. Labuan Bajo')
-        # update.message.reply_text('Mau pilih yang mana nih?', reply_markup=tl.ReplyKeyboardMarkup([['Danau Toba', 'Bali', 'Likupang', 'Jogjakarta', 'Mandalika', 'Labuan Bajo']], one_time_keyboard=True))
-        keyboard = [tl.InlineKeyboardButton('Danau Toba', callback_data='1'),
-                    tl.InlineKeyboardButton('Bali', callback_data='2'),
-                    tl.InlineKeyboardButton('Likupang', callback_data='3'),
-                    tl.InlineKeyboardButton('Jogjakarta', callback_data='4'),
-                    tl.InlineKeyboardButton('Mandalika', callback_data='5'),
-                    tl.InlineKeyboardButton('Labuan Bajo', callback_data='6')]
+        keyboard = [[tl.InlineKeyboardButton('Danau Toba', url='https://travelspromo.com/htm-wisata/danau-toba-sumatera-utara/', callback_data=1)],
+                    [tl.InlineKeyboardButton('Bali', url='https://travelspromo.com/?s=bali', callback_data=2)],
+                    [tl.InlineKeyboardButton('Likupang', url='https://www.idntimes.com/travel/destination/prila-arofani/tempat-wisata-di-likupang-destinasi-super-prioritas/1', callback_data=3)],
+                    [tl.InlineKeyboardButton('Jogjakarta', url='https://travelspromo.com/?s=jogja', callback_data=4)],
+                    [tl.InlineKeyboardButton('Mandalika', url='https://travelspromo.com/?s=mandalika', callback_data=5)],
+                    [tl.InlineKeyboardButton('Labuan Bajo', url='https://travelspromo.com/?s=labuan+bajo', callback_data=6)]]
 
         reply_markup = tl.InlineKeyboardMarkup(keyboard)
         update.message.reply_text('Ini nih tempat-tempat keren dan populer yang bisa kalian pilih saat ini:', reply_markup = reply_markup)
         return CANCEL
-    elif 'itinerary' in update.message.text:
-        update.message.reply_text('Fitur itinerary sedang dalam tahap development', reply_markup=tl.ReplyKeyboardMarkup([['Ok']], one_time_keyboard=True))
-        return CANCEL
+    elif 'itinerary' in update.message.text or ('travel' in update.message.text and 'plan' in update.message.text):
+        update.message.reply_text('Cerita mau kemana kamu?')
+        return DESTIN
+
+def destination(update, context):
+    destinasi = update.message.text
+    update_dest(kw='d', d=destinasi)
+    update.message.reply_text(f"{destinasi} emang destinasi keren sih, kapan kesana?")
+    return TIME
+
+def definetime(update, context):
+    waktu = update.message.text
+    update_dest(kw='t', t=waktu)
+    update.message.reply_text(f"{waktu} waktu yang tepat sih.")
+    return TRAVELPLAN
+
+# def travelplan(update, context):
+
 
 def cancel(update, context):
     update.message.reply_text(f"Anda memilih {update.message.text}")
@@ -140,6 +165,8 @@ def main():
                     PROFILE_B: [MessageHandler(Filters.regex(re.compile(r'^\w+$')), profile_b)],
                     PROFILE_C: [MessageHandler(Filters.regex(re.compile(r'\w+')), profile_c)],
                     STARTAGAIN: [MessageHandler(Filters.regex(yes_no_regex), startagain)],
+                    DESTIN: [MessageHandler(Filters.regex(re.compile(r'\w+')), destination)],
+                    TIME: [MessageHandler(Filters.regex(re.compile(r'\w+')), definetime)]
                 },
                 fallbacks=[CommandHandler('cancel', cancel)]
             )
