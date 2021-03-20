@@ -3,9 +3,9 @@ import telegram as tl
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler
 import logging
 import re
-import pandas as pd
 from os import getcwd
 from os.path import join, dirname
+from pymongo import MongoClient
 
 # references: https://www.thepythoncode.com/article/make-a-telegram-bot-in-python
 # States, as integers
@@ -21,24 +21,19 @@ TIME = 8
 TRAVELPLAN = 9
 CANCEL = 100
 
-# user_profile = pd.read_csv(join('data', 'user_profile.csv'))
-user_profile = pd.read_csv('../data/user_profile.csv')
-temp_profile = {
-    'id': [],
-    'first_name': [],
-    'username': [],
-    'domisili': [],
-    'gender': [],
-    'age': []
-}
-temp_dest = {
-    'destination': '',
-    'time': ''
-}
+temp_profile = {}
+temp_dest = {}
+
+cluster = MongoClient('mongodb+srv://owl_19:dodol123@owlcluster.r0w1y.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
+db = cluster['compass_chatbot']['user_profile']
+
+first_name = []
+for i in db.find({}):
+    first_name.append(i['first_name'])
 
 def start(update, context):
     update.message.reply_text('Haloo...')
-    if update.message.from_user['first_name'] not in user_profile.values:
+    if update.message.from_user['first_name'] not in first_name:
         update.message.reply_text('Selamat datang, untuk dapat menggunakan fitur ini secara optimal, kami butuh data diri anda, bersediakan anda?',
                                     reply_markup=tl.ReplyKeyboardMarkup([['Yes', 'No']], one_time_keyboard=True))
         return WELCOME1
@@ -50,26 +45,23 @@ def start(update, context):
         return WELCOME2
 
 def update_data(kw, save=False, **kwargs):
-    global user_profile, temp_profile
+    global temp_profile
     if kw == 'id':
-        temp_profile['id'] = [kwargs['id']]
-        temp_profile['first_name'] = [kwargs['firstname']]
-        temp_profile['username'] = [kwargs['username']]
+        temp_profile['_id'] = kwargs['id']
+        temp_profile['first_name'] = kwargs['firstname']
+        temp_profile['username'] = kwargs['username']
 
     if kw == 'dom':
-        temp_profile['domisili'] = [kwargs['dom']]
+        temp_profile['domisili'] = kwargs['dom']
     
     if kw == 'gen':
-        temp_profile['gender'] = [kwargs['gen']]
+        temp_profile['gender'] = kwargs['gen']
 
     if kw == 'age':
-        temp_profile['age'] = [kwargs['age']]
+        temp_profile['age'] = kwargs['age']
 
     if save == True:
-        df = pd.DataFrame.from_dict(temp_profile)
-        user_profile = user_profile.append(df, ignore_index=True)
-        # return user_profile.to_csv(join('data', 'user_profile.csv'), index=False), temp_profile
-        return user_profile.to_csv('../data/user_profile.csv', index=False), temp_profile
+        return db.insert_one(temp_profile), temp_profile
     else:
         return temp_profile
 
