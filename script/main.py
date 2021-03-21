@@ -6,7 +6,6 @@ import re
 import os
 from pymongo import MongoClient
 
-# references: https://www.thepythoncode.com/article/make-a-telegram-bot-in-python
 # States, as integers
 WELCOME1 = 0
 WELCOME2 = 1
