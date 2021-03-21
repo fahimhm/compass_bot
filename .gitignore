@@ -92,3 +92,5 @@ ENV/
 processed
 
 .DS_Store
+
+script/constant.py

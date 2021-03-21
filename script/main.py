@@ -1,10 +1,9 @@
-import constant as keys
+import config as keys
 import telegram as tl
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler
 import logging
 import re
-from os import getcwd
-from os.path import join, dirname
+import os
 from pymongo import MongoClient
 
 # references: https://www.thepythoncode.com/article/make-a-telegram-bot-in-python
@@ -21,16 +20,18 @@ TIME = 8
 TRAVELPLAN = 9
 CANCEL = 100
 
+# setuo db
+cluster = MongoClient(keys.mongodb_key)
+db = cluster['compass_chatbot']['user_profile']
+
 temp_profile = {}
 temp_dest = {}
-
-cluster = MongoClient('mongodb+srv://owl_19:dodol123@owlcluster.r0w1y.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
-db = cluster['compass_chatbot']['user_profile']
 
 first_name = []
 for i in db.find({}):
     first_name.append(i['first_name'])
 
+# /start
 def start(update, context):
     update.message.reply_text('Haloo...')
     if update.message.from_user['first_name'] not in first_name:
@@ -143,7 +144,7 @@ def cancel(update, context):
     return ConversationHandler.END
 
 def main():
-    updater = Updater(keys.API_KEY, use_context=True)
+    updater = Updater(keys.telegram_key, use_context=True)
     dp = updater.dispatcher
     yes_no_regex = re.compile(r'^(yes|no|ya|y|n|tidak|tdk)$', re.IGNORECASE)
     logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -164,7 +165,11 @@ def main():
             )
     dp.add_handler(handler)
 
-    updater.start_polling()
-    updater.idle()
+    if keys.ENV == 'DEV':
+        updater.start_polling()
+        updater.idle()
+    elif keys.ENV == 'PROD':
+        updater.start_webhook(listen=keys.host, port=keys.port, url_path=keys.telegram_key, webhook_url='https://compasschatbot.herokuapp.com/' + keys.telegram_key)
+        updater.idle()
 
 main()
