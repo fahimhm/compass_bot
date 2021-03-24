@@ -1,6 +1,7 @@
 import logging
 import os
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from script import config as keys
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -8,7 +9,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 PORT = int(os.environ.get('PORT', '8443'))
-TOKEN = '1607783496:AAFcLSZ5ANK6tXGsxeXc5GXbNnFWyjjXSnI'
+TOKEN = keys.telegram_key
 APP_NAME = 'https://compasschatbot.herokuapp.com/'
 
 def start(update, context):
