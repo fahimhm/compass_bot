@@ -11,8 +11,8 @@ if ENV == "DEV":
 elif ENV == "PROD":
     # import ast
     from boto.s3.connection import S3Connection
-    telegram_key = S3Connection(os.environ["telegram_key"])
-    mongodb_key = S3Connection(os.environ["mongodb_key"])
+    telegram_key = os.environ["telegram_key"]
+    mongodb_key = os.environ["mongodb_key"]
 
 # # server
 host = "0.0.0.0"
