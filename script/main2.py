@@ -142,7 +142,6 @@ def cancel(update, context):
 def main():
     dp = bot.dispatcher
     yes_no_regex = re.compile(r'^(yes|no|ya|y|n|tidak|tdk)$', re.IGNORECASE)
-
     handler = ConversationHandler(
                 entry_points=[CommandHandler('start', start)],
                 states={
