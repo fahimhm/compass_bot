@@ -9,6 +9,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 PORT = int(os.environ.get('PORT', '8443'))
+# TOKEN = '1607783496:AAFcLSZ5ANK6tXGsxeXc5GXbNnFWyjjXSnI'
 TOKEN = keys.telegram_key
 APP_NAME = 'https://compasschatbot.herokuapp.com/'
 
