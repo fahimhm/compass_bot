@@ -95,5 +95,5 @@ processed
 
 script/constant.py
 constant.py
-# script/config.py
-# config.py
+script/config.py
+config.py

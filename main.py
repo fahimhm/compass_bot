@@ -47,12 +47,28 @@ for i in db.find({}):
     first_name.append(i['first_name'])
 
 def update_data(save=False, **kwargs):
-    temp_profile['_id'] = kwargs['id']
-    temp_profile['first_name'] = kwargs['firstname']
-    temp_profile['username'] = kwargs['username']
-    temp_profile['domisili'] = kwargs['dom']
-    temp_profile['gender'] = kwargs['gen']
-    temp_profile['age'] = kwargs['age']
+    try:
+        temp_profile['_id'] = kwargs['id']
+        temp_profile['first_name'] = kwargs['firstname']
+        temp_profile['username'] = kwargs['username']
+    except:
+        print('Not in state to save ID')
+
+    try:
+        temp_profile['domisili'] = kwargs['dom']
+    except:
+        print('Not in state to save domisili')
+    
+    try:
+        temp_profile['gender'] = kwargs['gen']
+    except:
+        print('Not in state to save gender')
+
+    try:
+        temp_profile['age'] = kwargs['age']
+    except:
+        print('Not in state to save age')
+        
     if save == True:
         return db.insert_one(temp_profile), temp_profile
     else:
@@ -66,13 +82,14 @@ def update_dest(save=False, **kwargs):
 # /start
 def start(update, context):
     """Send a message when the command /start is issued."""
-    update.message.reply_text('Haloo...')
+    url = 'https://cdn1.vectorstock.com/i/thumb-large/47/45/cartoon-comical-character-bali-kids-vector-34684745.jpg'
+    text = "Hai..!! <b>welcome to ChavellBot </b>\nPanggil saja kami <b><i>Chavel</i></b>, disini kami akan memandu anda untuk keliling Indonesia.\nUpss sabar, untuk dapat menggunakan fitur ini secara optimal, kami butuh data diri anda, bersediakan anda? (<b><i>yes/no</i></b>)"
+    context.bot.send_photo(chat_id=update.message.from_user['id'], photo=url)
     if update.message.from_user['first_name'] not in first_name:
-        update.message.reply_text('Selamat datang, untuk dapat menggunakan fitur ini secara optimal, kami butuh data diri anda, bersediakan anda?',
-                                    reply_markup=tl.ReplyKeyboardMarkup([['Yes', 'No']], one_time_keyboard=True))
+        update.message.reply_text(text, parse_mode=tl.ParseMode.HTML, reply_markup=tl.ReplyKeyboardMarkup([['Yes', 'No']], one_time_keyboard=True))
         return WELCOME1
     else:
-        update.message.reply_text('Kenalin nama aku Compass-Bot.')
+        update.message.reply_text('<b>Welcome back to ChavellBot</b>', parse_mode=tl.ParseMode.HTML)
         update.message.reply_text('Disini aku bakalan bantuin kalian nih untuk explore Indonesia.')
         update.message.reply_text('Kalian butuh info apa nih?',
                                     reply_markup=tl.ReplyKeyboardMarkup([['Mau tau tempat oke dong!', 'Bikinin itinerary bisa kali!']], one_time_keyboard=True))
@@ -80,7 +97,7 @@ def start(update, context):
 
 def welcome1(update, context):
     if update.message.text.lower() in ['yes', 'ya', 'y']:
-        update_data(kw='id', id=update.message.from_user['id'], firstname=update.message.from_user['first_name'], username=update.message.from_user['username'])
+        update_data(id=update.message.from_user['id'], firstname=update.message.from_user['first_name'], username=update.message.from_user['username'])
         update.message.reply_text('Dimanakah anda berdomisili saat ini?')
         return PROFILE_A
     else:
