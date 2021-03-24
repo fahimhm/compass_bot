@@ -1,5 +1,6 @@
 import logging
 import os
+import telegram as tl
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from script import config as keys
 import re
@@ -163,7 +164,7 @@ def main():
     elif keys.ENV == 'PROD':
         bot.start_webhook(listen='0.0.0.0', port=PORT, url_path=TOKEN)
         bot.bot.set_webhook(APP_NAME + TOKEN)
-        
+
     updater.idle()
 
 if __name__ == '__main__':
