@@ -161,8 +161,8 @@ def main():
     if keys.ENV == 'DEV':
         bot.start_polling()
     elif keys.ENV == 'PROD':
-        bot.start_webhook(listen='0.0.0.0', port=keys.port, url_path=keys.telegram_key)
-        bot.bot.set_webhook('https://compasschatbot.herokuapp.com/' + keys.telegram_key)
+        bot.start_webhook(listen='0.0.0.0', port=keys.port, url_path='1607783496:AAFcLSZ5ANK6tXGsxeXc5GXbNnFWyjjXSnI')
+        bot.bot.set_webhook('https://compasschatbot.herokuapp.com/' + '1607783496:AAFcLSZ5ANK6tXGsxeXc5GXbNnFWyjjXSnI')
 
     # if keys.ENV == 'DEV':
     #     updater.start_polling()
