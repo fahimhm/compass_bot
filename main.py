@@ -1,7 +1,7 @@
 import logging
 import os
 import telegram as tl
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler
 from script import config as keys
 import re
 from pymongo import MongoClient
@@ -30,7 +30,7 @@ TRAVELPLAN = 9
 CANCEL = 100
 
 # setup bot
-bot = Updater(keys.telegram_key, use_context=True)
+bot = Updater(TOKEN, use_context=True)
 
 # setup db
 cluster = MongoClient(keys.mongodb_key)
@@ -165,7 +165,7 @@ def main():
         bot.start_webhook(listen='0.0.0.0', port=PORT, url_path=TOKEN)
         bot.bot.set_webhook(APP_NAME + TOKEN)
 
-    updater.idle()
+    bot.idle()
 
 if __name__ == '__main__':
     main()
