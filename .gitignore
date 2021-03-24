@@ -94,3 +94,6 @@ processed
 .DS_Store
 
 script/constant.py
+constant.py
+# script/config.py
+# config.py
