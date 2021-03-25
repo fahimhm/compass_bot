@@ -68,7 +68,7 @@ def update_data(save=False, **kwargs):
         temp_profile['age'] = kwargs['age']
     except:
         print('Not in state to save age')
-        
+
     if save == True:
         return db.insert_one(temp_profile), temp_profile
     else:
@@ -83,16 +83,28 @@ def update_dest(save=False, **kwargs):
 def start(update, context):
     """Send a message when the command /start is issued."""
     url = 'https://cdn1.vectorstock.com/i/thumb-large/47/45/cartoon-comical-character-bali-kids-vector-34684745.jpg'
-    text = "Hai..!! <b>welcome to ChavellBot </b>\nPanggil saja kami <b><i>Chavel</i></b>, disini kami akan memandu anda untuk keliling Indonesia.\nUpss sabar, untuk dapat menggunakan fitur ini secara optimal, kami butuh data diri anda, bersediakan anda? (<b><i>yes/no</i></b>)"
+    text1 = "Hai..!! <b>welcome to ChavellBot </b>\nPanggil saja kami <b><i>Chavel</i></b>, disini kami akan memandu anda untuk keliling Indonesia.\nUpss sabar, untuk dapat menggunakan fitur ini secara optimal, kami butuh data diri anda, bersediakan anda? (<b><i>yes/no</i></b>)"
+    text2 = f"Hai {update.message.from_user['first_name']}! \nSudah tahu mau liburan kemana? Chavel punya rekomendasi nih special buat kamu."
+    kboard = [
+            [
+                tl.InlineKeyboardButton('Bali', callback_data='BALI'),
+                tl.InlineKeyboardButton('Danau Toba', callback_data='DNTOBA'),
+                tl.InlineKeyboardButton('Yogyakarta', callback_data='YGY')
+            ],
+            [
+                tl.InlineKeyboardButton('Labuan Bajo', callback_data='LABBJO'),
+                tl.InlineKeyboardButton('Likupang', callback_data='LKP'),
+                tl.InlineKeyboardButton('Mandalika', callback_data='MDL')
+            ]
+        ]
     context.bot.send_photo(chat_id=update.message.from_user['id'], photo=url)
     if update.message.from_user['first_name'] not in first_name:
-        update.message.reply_text(text, parse_mode=tl.ParseMode.HTML, reply_markup=tl.ReplyKeyboardMarkup([['Yes', 'No']], one_time_keyboard=True))
+        update.message.reply_text(text1, parse_mode=tl.ParseMode.HTML, reply_markup=tl.ReplyKeyboardMarkup([['Yes', 'No']], one_time_keyboard=True))
         return WELCOME1
     else:
+        reply_markup = tl.InlineKeyboardMarkup(kboard)
         update.message.reply_text('<b>Welcome back to ChavellBot</b>', parse_mode=tl.ParseMode.HTML)
-        update.message.reply_text('Disini aku bakalan bantuin kalian nih untuk explore Indonesia.')
-        update.message.reply_text('Kalian butuh info apa nih?',
-                                    reply_markup=tl.ReplyKeyboardMarkup([['Mau tau tempat oke dong!', 'Bikinin itinerary bisa kali!']], one_time_keyboard=True))
+        update.message.reply_text(text2, reply_markup = reply_markup)
         return WELCOME2
 
 def welcome1(update, context):
@@ -182,7 +194,7 @@ def main():
         bot.start_webhook(listen='0.0.0.0', port=PORT, url_path=TOKEN)
         bot.bot.set_webhook(APP_NAME + TOKEN)
 
-    bot.idle()
+    # bot.idle()
 
 if __name__ == '__main__':
     main()

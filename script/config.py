@@ -1,7 +1,7 @@
 import os
 
-# ENV = "DEV"
-ENV = "PROD"
+ENV = "DEV"
+# ENV = "PROD"
 
 # # keys
 if ENV == "DEV":
