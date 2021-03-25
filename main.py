@@ -102,7 +102,7 @@ def start(update, context):
         update.message.reply_text(text1, parse_mode=tl.ParseMode.HTML, reply_markup=tl.ReplyKeyboardMarkup([['Yes', 'No']], one_time_keyboard=True))
         return WELCOME1
     else:
-        reply_markup = tl.InlineKeyboardMarkup(kboard)
+        reply_markup = tl.InlineKeyboardMarkup(kboard, resize_keyboard=True)
         update.message.reply_text('<b>Welcome back to ChavellBot</b>', parse_mode=tl.ParseMode.HTML)
         update.message.reply_text(text2, reply_markup = reply_markup)
         return WELCOME2
@@ -135,24 +135,31 @@ def profile_c(update, context):
     return STARTAGAIN
 
 def startagain(update, context):
-    update.message.reply_text('Kalian butuh info apa nih?',
-                                reply_markup=tl.ReplyKeyboardMarkup([['Mau tau tempat oke dong!', 'Bikinin itinerary bisa kali!']], one_time_keyboard=True))
+    text2 = f"Hai {update.message.from_user['first_name']}! \nSudah tahu mau liburan kemana? Chavel punya rekomendasi nih special buat kamu."
+    kboard = [
+            [
+                tl.InlineKeyboardButton('Bali', callback_data='BALI'),
+                tl.InlineKeyboardButton('Danau Toba', callback_data='DNTOBA'),
+                tl.InlineKeyboardButton('Yogyakarta', callback_data='YGY')
+            ],
+            [
+                tl.InlineKeyboardButton('Labuan Bajo', callback_data='LABBJO'),
+                tl.InlineKeyboardButton('Likupang', callback_data='LKP'),
+                tl.InlineKeyboardButton('Mandalika', callback_data='MDL')
+            ]
+        ]
+    reply_markup = tl.InlineKeyboardMarkup(kboard, resize_keyboard=True)
+    update.message.reply_text('<b>Welcome back to ChavellBot</b>', parse_mode=tl.ParseMode.HTML)
+    update.message.reply_text(text2, reply_markup = reply_markup)
     return WELCOME2
 
 def welcome2(update, context):
-    if 'oke' in update.message.text:
-        keyboard = [[tl.InlineKeyboardButton('Danau Toba', url='https://travelspromo.com/htm-wisata/danau-toba-sumatera-utara/', callback_data=1)],
-                    [tl.InlineKeyboardButton('Bali', url='https://travelspromo.com/?s=bali', callback_data=2)],
-                    [tl.InlineKeyboardButton('Likupang', url='https://www.idntimes.com/travel/destination/prila-arofani/tempat-wisata-di-likupang-destinasi-super-prioritas/1', callback_data=3)],
-                    [tl.InlineKeyboardButton('Jogjakarta', url='https://travelspromo.com/?s=jogja', callback_data=4)],
-                    [tl.InlineKeyboardButton('Mandalika', url='https://travelspromo.com/?s=mandalika', callback_data=5)],
-                    [tl.InlineKeyboardButton('Labuan Bajo', url='https://travelspromo.com/?s=labuan+bajo', callback_data=6)]]
-        reply_markup = tl.InlineKeyboardMarkup(keyboard)
-        update.message.reply_text('Ini nih tempat-tempat keren dan populer yang bisa kalian pilih saat ini:', reply_markup = reply_markup)
-        return CANCEL
-    elif 'itinerary' in update.message.text or ('travel' in update.message.text and 'plan' in update.message.text):
-        update.message.reply_text('Cerita mau kemana kamu?')
-        return DESTIN
+    query: tl.CallbackQuery = update.callback_query
+    if query.data == 'BALI':
+        url_bali = 'https://www.korinatour.co.id/wp-content/uploads/2018/12/6-300x300.png'
+        text_bali = "Saya suka dengan selera anda :D\n\nBerkunjung ke <b>Pulaunya para Dewa</b> memang memberikan kesan tersendiri.Kamu akan dimajakan dengan keindahan alam, kuliner dan juga adat istiadatnya. Gak sabar kan? Sabar ya Chavel mau tanya nih, berapa hari kamu akan liburan di Bali?"
+        context.bot.send_photo(chat_id=update.effective_chat.id, photo=url_bali, caption=text_bali, parse_mode=tl.ParseMode.HTML)
+    return DESTIN
 
 def destination(update, context):
     destinasi = update.message.text
