@@ -1,7 +1,7 @@
 import logging
 import os
 import telegram as tl
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler, CallbackQueryHandler
 from script import config as keys
 import re
 from pymongo import MongoClient
@@ -184,7 +184,7 @@ def main():
                 entry_points=[CommandHandler('start', start)],
                 states={
                     WELCOME1: [MessageHandler(Filters.regex(yes_no_regex), welcome1)],
-                    WELCOME2: [MessageHandler(Filters.regex(re.compile(r'\w+')), welcome2)],
+                    WELCOME2: [CallbackQueryHandler(welcome2)],
                     PROFILE_A: [MessageHandler(Filters.regex(re.compile(r'\w+')), profile_a)],
                     PROFILE_B: [MessageHandler(Filters.regex(re.compile(r'^\w+$')), profile_b)],
                     PROFILE_C: [MessageHandler(Filters.regex(re.compile(r'\w+')), profile_c)],

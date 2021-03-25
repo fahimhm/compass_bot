@@ -5,7 +5,7 @@ ENV = "PROD"
 
 # # keys
 if ENV == "DEV":
-    import constant as keys
+    from script import constant as keys
     telegram_key = keys.API_KEY
     mongodb_key = keys.MONGO_KEY
 elif ENV == "PROD":
